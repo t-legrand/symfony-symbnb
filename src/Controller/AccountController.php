@@ -45,7 +45,8 @@ class AccountController extends AbstractController
      * 
      * @return void
      */
-    public function logout() {
+    public function logout()
+    {
         // ...rien !
     }
 
@@ -56,15 +57,15 @@ class AccountController extends AbstractController
      *
      * @return Response
      */
-    public function register(Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder) {
+    public function register(Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder)
+    {
         $user = new User();
 
         $form = $this->createForm(RegistrationType::class, $user);
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $hash = $encoder->encodePassword($user, $user->getHash());
             $user->setHash($hash);
 
@@ -73,7 +74,8 @@ class AccountController extends AbstractController
             $manager->flush();
 
             $this->addFlash(
-                'success', "Votre compte a bien été créé ! Vous pouvez désormais vous connecter !"
+                'success',
+                "Votre compte a bien été créé ! Vous pouvez désormais vous connecter !"
             );
 
             return $this->redirectToRoute('account_login');
@@ -92,15 +94,15 @@ class AccountController extends AbstractController
      * 
      * @return Response
      */
-    public function profile(Request $request, EntityManagerInterface $manager) {
+    public function profile(Request $request, EntityManagerInterface $manager)
+    {
         $user = $this->getUser();
 
         $form = $this->createForm(AccountType::class, $user);
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             // Il n'est pas nécessaire de faire persister une entité qui existe déjà
             $manager->persist($user);
             $manager->flush();
@@ -121,7 +123,8 @@ class AccountController extends AbstractController
      *
      * @return Response
      */
-    public function updatePassword(Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder) {
+    public function updatePassword(Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder)
+    {
         $user = $this->getUser();
 
         $passwordUpdate = new PasswordUpdate();
@@ -130,17 +133,13 @@ class AccountController extends AbstractController
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             // 1. Vérifier que le oldPassword du formulaire soit le même que le password de l'user
-            if(!password_verify($passwordUpdate->getOldPassword(), $user->getHash()))
-            {
+            if (!password_verify($passwordUpdate->getOldPassword(), $user->getHash())) {
                 // Gérer l'erreur
                 $form->get('oldPassword')->addError(new FormError("Votre ancien mot de passe ne correspond pas !"));
                 //$this->addFlash('error', "Votre ancien mot de passe ne correspond pas !");
-            }
-            else
-            {
+            } else {
                 $newPassword = $passwordUpdate->getNewPassword();
                 $hash = $encoder->encodePassword($user, $newPassword);
 
@@ -155,7 +154,7 @@ class AccountController extends AbstractController
             }
 
             // Il n'est pas nécessaire de faire persister une entité qui existe déjà
-            
+
         }
 
         return $this->render('account/password.html.twig', [
@@ -171,7 +170,8 @@ class AccountController extends AbstractController
      * 
      * @return Response
      */
-    public function myAccount() {
+    public function myAccount()
+    {
         return $this->render('user/index.html.twig', [
             'user' => $this->getUser()
         ]);

@@ -1,0 +1,14 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Action interdite{% endblock %}
+{% block body %}
+    <div class="container">
+        <h1>Vous n'avez pas le droit d'accéder à cette ressource</h1>
+        <div class="alert alert-danger">
+            <p>Si vous essayez de modifier une annonce, vérifiez qu'elle vous appartien bien !</p>
+        </div>
+
+        <a href="{{ path('homepage') }}" class="btn btn-primary">Retour à l'accueil</a>
+        <a href="{{ path('ads_index') }}" class="btn btn-success">Nos annonces</a>
+    </div>
+{% endblock %}
