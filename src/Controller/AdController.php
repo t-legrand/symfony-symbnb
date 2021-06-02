@@ -96,7 +96,6 @@ class AdController extends AbstractController
 
             $this->addFlash('success', "Les modifications de l'annonce <strong>{$ad->getTitle()} </strong> a bien été enregisrée !");
 
-
             return $this->redirectToRoute('ads_show', ['slug' => $ad->getSlug()]);
         }
 

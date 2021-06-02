@@ -8,6 +8,12 @@ div.ad-titl{
     background-position: center center;
 }
 
+div.ad-title .btn-primary {
+    margin-top: 20em;
+    font-size: 1.5em;
+    line-height: 1.5em;
+}
+
 div.ad-titl h1, div.ad-titl p {
     color: white;
     text-shadow: 3px 3px 3px rgba(0,0,0,0.5);
@@ -39,4 +45,12 @@ div.carousel-caption {
 
 span.rating i {
     color: goldenrod;
+}
+
+.alert a {
+    text-decoration: none;
+}
+
+.alert .btn {
+    color: white;
 }
