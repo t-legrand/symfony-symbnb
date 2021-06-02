@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Ad;
 use App\Form\AdType;
 use App\Repository\AdRepository;
+use App\Service\PaginationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,16 +15,33 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AdminAdController extends AbstractController
 {
-    /**
-     * @Route("/admin/ads", name="admin_ads_index")
+    /** <\d+>?1 -> requirement, nombre(s) avec par défaut 1
+     * @Route("/admin/ads/{page<\d+>?1}", name="admin_ads_index")
      * 
+     * @param $page
      * @param AdRepository $repo
      * @return void
      */
-    public function index(AdRepository $repo)
+    public function index(AdRepository $repo, $page = 1, PaginationService $pagination)
     {
+        /* Méthode find : permet de retrouver un enregistrement à partir d'un identifiant
+        $ad = $repo->find(884);
+        
+
+        $ad = $repo->findOneBy([
+            'title' => "Quisquam repellendus suscipit perferendis autem fugit quis.(corrigée)"
+        ]);
+
+        $ads = $repo->findBy([], [], 5, 0);
+
+        //dump($ad);
+        dump($ads);*/
+
+        $pagination->setEntityClass(Ad::class)
+                    ->setPage($page);
+        
         return $this->render('admin/ad/index.html.twig', [
-            'ads' => $repo->findAll()
+            'pagination' => $pagination
         ]);
     }
 
