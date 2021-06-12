@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Entity\User;
 use Cocur\Slugify\Slugify;
-use App\Repository\AdRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -16,11 +15,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass=AdRepository::class)
  * @ORM\HasLifecycleCallbacks
  * 
- * Ne pas créer d'entité qui a le même title et le même titre
- * @UniqueEntity(
- * fields={"title"},
- * message="Une autre annonce possède déjà ce titre, modifiez le !"
- * )
+ * Ne pas créer d'entité qui a le même title
+ * @UniqueEntity(fields={"title"}, message="Une autre annonce possède déjà ce titre, modifiez le !")
  */
 class Ad
 {
@@ -108,8 +104,7 @@ class Ad
      */
     public function initializeSlug()
     {
-        if(empty($this->slug))
-        {
+        if (empty($this->slug)) {
             $slugify = new Slugify();
             $this->slug = $slugify->slugify($this->title);
         }
@@ -123,9 +118,8 @@ class Ad
      */
     public function getCommentFromAuthor(User $author)
     {
-        foreach($this->comments as $comment)
-        {
-            if($comment->getAuthor() === $author) return $comment;
+        foreach ($this->comments as $comment) {
+            if ($comment->getAuthor() === $author) return $comment;
         }
         return null;
     }
@@ -135,14 +129,15 @@ class Ad
      *
      * @return float
      */
-    public function getAvgRatings() {
+    public function getAvgRatings()
+    {
         // Calculer la somme des notations
-        $sum = array_reduce($this->comments->toArray(), function($total, $comment) {
+        $sum = array_reduce($this->comments->toArray(), function ($total, $comment) {
             return $total + $comment->getRating();
         }, 0);
         // Faire la division avec le nombre de notes
-        if(count($this->comments) > 0) return $sum / count($this->comments);
-        
+        if (count($this->comments) > 0) return $sum / count($this->comments);
+
         return 0;
     }
 
@@ -151,22 +146,22 @@ class Ad
      *
      * @return array Un tableau d'objets DateTime représentant les jours d'occupation
      */
-    public function getNotAvailableDays() {
+    public function getNotAvailableDays()
+    {
         $notAvailableDays = [];
 
-        foreach($this->bookings as $booking)
-        {
+        foreach ($this->bookings as $booking) {
             // Calculer les jours qui se trouvent entre la date d'arrivée et de départ
             $resultat = range(
                 $booking->getStartDate()->getTimestamp(),
                 $booking->getEndDate()->getTimeStamp(),
-                24*60*60
+                24 * 60 * 60
             );
 
             // Représentation du tableau resultat sous la forme de dates entre la date d'arrivée et la date de départ
-            $days = array_map(function($dayTimestamp){
+            $days = array_map(function ($dayTimestamp) {
                 return new \DateTime(date('Y-m-d', $dayTimestamp));
-            },$resultat);
+            }, $resultat);
 
             $notAvailableDays = array_merge($notAvailableDays, $days);
         }
